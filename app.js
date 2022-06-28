@@ -15,7 +15,7 @@ const getPlayerChoice = () => {
     selection !== PAPER && 
     selection !== SCISSORS) {
     alert(`Invalid choice! We use ${DEFAULT_USER_CHOICE} for you!`);
-    return DEFAULT_USER_CHOICE;
+    return;
   }
   return selection;
 };
@@ -34,7 +34,7 @@ const getComputerChoice = () => {
   return selection;
 };
 
-const getWinner = (pChoice, cChoice) => {
+const getWinner = (cChoice, pChoice = DEFAULT_USER_CHOICE) => {
   if (pChoice === cChoice) {
 		return RESULT_DRAW; 
   } else if (
@@ -56,8 +56,13 @@ startGameBtn.addEventListener("click", () => {
   console.log("The game is starting...");
   const playerChoice = getPlayerChoice();
   const computerChoice = getComputerChoice();
-	const winner = getWinner(playerChoice, computerChoice);
-  let message = `You chose ${playerChoice} and the computer chose ${computerChoice} `;
+  let winner;
+  if (playerChoice) {
+    winner = getWinner(computerChoice, playerChoice);
+  } else {
+    winner = getWinner(computerChoice)
+  }
+  let message = `You chose ${playerChoice || DEFAULT_USER_CHOICE} and the computer chose ${computerChoice} `;
   if (winner === RESULT_DRAW) {
     message = message + "it's a draw."
   } else if (winner === RESULT_PLAYER_WINS) {
@@ -65,7 +70,44 @@ startGameBtn.addEventListener("click", () => {
   } else {
     message = message + 'the computer win!'
   };
-  console.log(message);
+  alert(message);
+  isRunning = false;
 });
 
+// not related to the game
+// ES6
+// rest operator => use more arguments than parameters assigned, or, make all arguments store in an array.
+// We can also declare functions inside of functions! => See validateNumber in sumUp.
+
+const sumUp = (resultHandler, ...numbers) => {
+  const validateNumber = number => isNaN(number) ? 0 : number;
+  let sum = 0;
+  for (const num of numbers) {
+    sum += validateNumber(num);
+  }
+  resultHandler(sum);
+}
+
+const showResult = result => alert('The result of the sum of all numbers is: ' + result);
+
+sumUp(showResult,1,25,242,'hola',74,10);
+
+// Pre ES6 and only on functions that aren't arrow functios
+
+const subtract = function(resultHandler, ...numbers) {
+  let sum = 0;
+  for (const num of numbers) { // try to not use it
+    sum -= num;
+  }
+  resultHandler(sum);
+}
+
+/* const subtract = function() {
+  let sum = 0;
+  for (const num of arguments) { // try to not use it
+    sum -= num;
+  }
+  return sum;
+} */
+subtract(showResult,100,5,25,20);
 
